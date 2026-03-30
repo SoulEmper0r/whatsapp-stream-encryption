@@ -1,0 +1,26 @@
+{
+  "name": "i2crm/whatsapp-stream-encryption",
+  "description": "PSR-7 декораторы потоков для шифрования/дешифрования WhatsApp media.",
+  "type": "library",
+  "license": "MIT",
+  "require": {
+    "php": ">=8.0",
+    "psr/http-message": "^1.1 || ^2.0"
+  },
+  "require-dev": {
+    "guzzlehttp/psr7": "^2.6",
+    "phpunit/phpunit": "^10.5"
+  },
+  "autoload": {
+    "psr-4": {
+      "I2crm\\WhatsApp\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "I2crm\\WhatsApp\\Tests\\": "tests/"
+    }
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true
+}

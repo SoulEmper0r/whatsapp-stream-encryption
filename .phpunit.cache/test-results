@@ -1,0 +1,1 @@
+{"version":2,"defects":{"I2crm\\WhatsApp\\Tests\\SamplesTest::testVideoSidecarMatchesSample":7},"times":{"I2crm\\WhatsApp\\Tests\\SamplesTest::testDecryptSamples":0.064,"I2crm\\WhatsApp\\Tests\\SamplesTest::testEncryptSamples":0.027,"I2crm\\WhatsApp\\Tests\\SamplesTest::testVideoSidecarMatchesSample":0.017}}
