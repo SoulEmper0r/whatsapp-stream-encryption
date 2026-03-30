@@ -23,11 +23,11 @@ final class SamplesTest extends TestCase
             $encrypted = $this->readSample("{$type}.encrypted");
             $encryptedStream = Utils::streamFor($encrypted);
 
-            $dec = new DecryptingStream($encryptedStream, $keys);
-            $plain = $dec->getContents();
+            $decryptingStream = new DecryptingStream($encryptedStream, $keys);
+            $decryptedContent = $decryptingStream->getContents();
 
             $original = $this->readSample("{$type}.original");
-            self::assertSame($original, $plain, "Дешифрование {$type} должно совпадать с *.original");
+            self::assertSame($original, $decryptedContent, "Дешифрование {$type} должно совпадать с *.original");
         }
     }
 
@@ -40,11 +40,11 @@ final class SamplesTest extends TestCase
             $original = $this->readSample("{$type}.original");
             $originalStream = Utils::streamFor($original);
 
-            $enc = new EncryptingStream($originalStream, $keys);
-            $encrypted = $enc->getContents();
+            $encryptingStream = new EncryptingStream($originalStream, $keys);
+            $encryptedContent = $encryptingStream->getContents();
 
-            $expected = $this->readSample("{$type}.encrypted");
-            self::assertSame($expected, $encrypted, "Шифрование {$type} должно совпадать с *.encrypted");
+            $expectedEncryptedContent = $this->readSample("{$type}.encrypted");
+            self::assertSame($expectedEncryptedContent, $encryptedContent, "Шифрование {$type} должно совпадать с *.encrypted");
         }
     }
 
@@ -58,18 +58,18 @@ final class SamplesTest extends TestCase
         $originalStream = Utils::streamFor($original);
 
         $sidecarGen = new SidecarGenerator($keys->macKey, $keys->iv);
-        $enc = new EncryptingStream($originalStream, $keys, $sidecarGen);
-        $encrypted = $enc->getContents();
+        $encryptingStream = new EncryptingStream($originalStream, $keys, $sidecarGen);
+        $encryptedContent = $encryptingStream->getContents();
 
         // В encrypted в конце лежит MAC (10 байт).
-        self::assertGreaterThan(10, \strlen($encrypted));
+        self::assertGreaterThan(10, \strlen($encryptedContent));
 
         $expectedSidecar = $this->readSample('VIDEO.sidecar');
         self::assertSame($expectedSidecar, $sidecarGen->sidecar(), 'Sidecar для VIDEO должен совпадать с samples/VIDEO.sidecar');
 
         // Доп. проверка: sidecar можно воспроизвести из iv + mediaData (ciphertext + final mac).
-        $fromCipher = $this->generateSidecar($encrypted, $keys->iv, $keys->macKey);
-        self::assertSame($expectedSidecar, $fromCipher);
+        $sidecarFromEncryptedContent = $this->generateSidecar($encryptedContent, $keys->iv, $keys->macKey);
+        self::assertSame($expectedSidecar, $sidecarFromEncryptedContent);
     }
 
     private function generateSidecar(string $mediaData, string $iv, string $macKey): string

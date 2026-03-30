@@ -11,7 +11,7 @@ namespace I2crm\WhatsApp\Stream;
  * [n*64K, (n+1)*64K+16] ключом macKey (HMAC-SHA256),
  * берём первые 10 байт и склеиваем.
  *
- * Важно: генерация идёт «на лету» — без дополнительных чтений из исходного потока.
+ * Важно: генерация идёт на лету - без дополнительных чтений из исходного потока.
  */
 final class SidecarGenerator
 {
@@ -49,8 +49,8 @@ final class SidecarGenerator
 
         while (\strlen($this->buffer) >= $need) {
             $piece = \substr($this->buffer, 0, $need);
-            $h = \hash_hmac('sha256', $piece, $this->macKey, true);
-            $this->sidecar .= \substr($h, 0, self::MAC_TRUNC);
+            $chunkMac = \hash_hmac('sha256', $piece, $this->macKey, true);
+            $this->sidecar .= \substr($chunkMac, 0, self::MAC_TRUNC);
 
             // сдвигаем на 64K, оставляя 16 байт перекрытия
             $this->buffer = \substr($this->buffer, self::CHUNK);
@@ -70,8 +70,8 @@ final class SidecarGenerator
             return;
         }
 
-        $h = \hash_hmac('sha256', $this->buffer, $this->macKey, true);
-        $this->sidecar .= \substr($h, 0, self::MAC_TRUNC);
+        $tailMac = \hash_hmac('sha256', $this->buffer, $this->macKey, true);
+        $this->sidecar .= \substr($tailMac, 0, self::MAC_TRUNC);
         $this->buffer = '';
     }
 

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace I2crm\WhatsApp\Crypto;
 
 /**
- * PKCS#7 padding для AES block size 16.
+ * Заполнение PKCS#7 для блока AES размером 16.
  */
 final class Pkcs7
 {

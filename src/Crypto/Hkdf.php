@@ -33,20 +33,20 @@ final class Hkdf
         }
 
         // Fallback на ручную реализацию RFC 5869.
-        $hashLen = 32;
-        $n = (int)\ceil($length / $hashLen);
-        if ($n > 255) {
+        $hashLength = 32;
+        $iterationCount = (int)\ceil($length / $hashLength);
+        if ($iterationCount > 255) {
             throw new \InvalidArgumentException('Слишком большая длина HKDF (n > 255).');
         }
 
         $salt = '';
         $prk = \hash_hmac('sha256', $ikm, $salt, true);
 
-        $t = '';
+        $previousBlock = '';
         $okm = '';
-        for ($i = 1; $i <= $n; $i++) {
-            $t = \hash_hmac('sha256', $t . $info . \chr($i), $prk, true);
-            $okm .= $t;
+        for ($blockIndex = 1; $blockIndex <= $iterationCount; $blockIndex++) {
+            $previousBlock = \hash_hmac('sha256', $previousBlock . $info . \chr($blockIndex), $prk, true);
+            $okm .= $previousBlock;
         }
 
         return \substr($okm, 0, $length);
